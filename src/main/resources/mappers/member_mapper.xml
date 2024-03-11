@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dot.tour_info_service_server.repository.MemberMapper">
+<!--    유저 정보  map-->
+<!--    <resultMap id="memberMap" type="com.dot.tour_info_service_server.entity.Member">-->
+<!--        <id property="mno" column="mno"/>-->
+<!--        <result property="birth" column="birth"/>-->
+<!--        <result property="disciplinary" column="disciplinary"/>-->
+<!--        <result property="fromSocial" column="from_social"/>-->
+<!--        <result property="isApprove" column="is_approve"/>-->
+<!--        <result property="isReset" column="is_reset"/>-->
+<!--        <result property="isValidate" column="is_validate"/>-->
+<!--        <result property="businessId" column="business_id"/>-->
+<!--        <result property="email" column="email"/>-->
+<!--        <result property="image" column="image"/>-->
+<!--        <result property="name" column="name"/>-->
+<!--        <result property="password" column="password"/>-->
+<!--        <result property="phone" column="phone"/>-->
+<!--    </resultMap>-->
+
+
+    <select id="getUserProfiles" parameterType="Long" resultMap="com.dot.tour_info_service_server.entity.Member">
+        select *
+        from
+            member
+        where
+            mno=#{mno};
+    </select>
+</mapper>
