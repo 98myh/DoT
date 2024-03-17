@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dot.tour_info_service_server.mapper.BoardLikeMapper">
+<!--    게시글에 해당하는 좋아요 삭제-->
+    <delete id="deleteBoardLikeBoard" parameterType="java.lang.Integer">
+        delete from board_like where board_bno=#{bno}
+    </delete>
+
+<!--    mno를 받을 때 해당하는 좋아요 삭제-->
+    <delete id="deleteBoardLikeMno" parameterType="java.lang.Integer">
+        delete from board_like where board_mno=#{mno}
+    </delete>
+
+<!--     게시글 좋아요 여부-->
+    <select id="existsBoardLike" parameterType="com.dot.tour_info_service_server.dto.request.board.BnoAndMnoRequestDTO" resultType="java.lang.Boolean">
+        select *
+        from board_like
+        where board_bno=${bno} and board_mno=#{mno}
+    </select>
+</mapper>

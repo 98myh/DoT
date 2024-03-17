@@ -18,6 +18,7 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, BoardLikeP
     @Query("Delete from BoardLike bl where bl.boardLikePK.board.bno=:bno")
     void deleteByBno(Long bno);
 
+    //mno를 받을 때 해장하는 좋아요 삭제
     @Modifying
     @Transactional
     @Query("delete from BoardLike bl where bl.boardLikePK.member.mno = :mno")

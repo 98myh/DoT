@@ -1,4 +1,4 @@
-package com.dot.tour_info_service_server.repository;
+package com.dot.tour_info_service_server.mapper;
 
 import com.dot.tour_info_service_server.entity.Member;
 import org.apache.ibatis.annotations.Mapper;
