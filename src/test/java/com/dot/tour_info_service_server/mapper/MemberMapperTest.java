@@ -1,4 +1,4 @@
-package com.dot.tour_info_service_server.repository;
+package com.dot.tour_info_service_server.mapper;
 
 import com.dot.tour_info_service_server.mapper.MemberMapper;
 import lombok.extern.log4j.Log4j2;
