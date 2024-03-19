@@ -19,8 +19,14 @@
         <result property="password" column="password"/>
         <result property="phone" column="phone"/>
     </resultMap>
+<!--    로그인-->
+    <select id="getLogin" parameterType="hashmap" resultType="com.dot.tour_info_service_server.entity.Member">
+        select *
+        from member
+        where email=#{email};
+    </select>
 
-
+<!--mno로 유저 정보 조회-->
     <select id="getUserProfiles" parameterType="java.lang.Long" resultMap="memberMap">
         select
             *
