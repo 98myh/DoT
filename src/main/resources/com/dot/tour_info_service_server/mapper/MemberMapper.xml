@@ -4,30 +4,51 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dot.tour_info_service_server.mapper.MemberMapper">
 <!--    유저 정보  map-->
-    <resultMap id="memberMap" type="com.dot.tour_info_service_server.entity.Member">
+    <resultMap id="MemberResultMap" type="com.dot.tour_info_service_server.entity.Member">
         <id property="mno" column="mno"/>
         <result property="birth" column="birth"/>
-        <result property="disciplinary" column="disciplinary"/>
+        <result property="disciplinary"  column="disciplinary"/>
         <result property="fromSocial" column="from_social"/>
         <result property="isApprove" column="is_approve"/>
         <result property="isReset" column="is_reset"/>
-        <result property="isValidate" column="is_validate"/>
+        <result property="isValidate" column="is_validate" />
         <result property="businessId" column="business_id"/>
         <result property="email" column="email"/>
         <result property="image" column="image"/>
         <result property="name" column="name"/>
         <result property="password" column="password"/>
         <result property="phone" column="phone"/>
+        <collection property="roleSet" javaType="java.util.Set" resultMap="MemberRoleMap"/>
+    </resultMap>
+    <resultMap id="MemberRoleMap" type="com.dot.tour_info_service_server.entity.Role">
+<!--        <id property="memberMno" column="member_mno"/>-->
+        <result property="roleSet" column="role_set"/>
     </resultMap>
 <!--    로그인-->
-    <select id="getLogin" parameterType="hashmap" resultType="com.dot.tour_info_service_server.entity.Member">
-        select *
-        from member
-        where email=#{email};
+    <select id="getLogin" parameterType="java.lang.String" resultMap="MemberResultMap">
+        select
+            m.mno,
+            m.disciplinary,
+            m.from_social,
+            m.is_approve,
+            m.is_reset,
+            m.is_validate,
+            m.business_id,
+            m.email,
+            m.image,
+            m.name,
+            m.password,
+            m.phone,
+            mr.role_set
+        from
+            member m
+            left outer join member_role_set mr on(m.mno=mr.member_mno)
+        where
+            email=#{email};
     </select>
 
 <!--mno로 유저 정보 조회-->
-    <select id="getUserProfiles" parameterType="java.lang.Long" resultMap="memberMap">
+    <select id="getUserProfiles" parameterType="java.lang.Long" resultMap="MemberResultMap">
         select
             *
         from

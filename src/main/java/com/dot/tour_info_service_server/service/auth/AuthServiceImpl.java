@@ -8,6 +8,7 @@ import com.dot.tour_info_service_server.dto.request.auth.SignupRequestDTO;
 import com.dot.tour_info_service_server.dto.response.auth.LoginServiceDTO;
 import com.dot.tour_info_service_server.entity.Disciplinary;
 import com.dot.tour_info_service_server.entity.Member;
+import com.dot.tour_info_service_server.mapper.MemberMapper;
 import com.dot.tour_info_service_server.repository.DisciplinaryRepository;
 import com.dot.tour_info_service_server.repository.MemberRepository;
 import com.dot.tour_info_service_server.security.util.SecurityUtil;
@@ -35,42 +36,38 @@ public class AuthServiceImpl implements AuthService {
     private final TokenService tokenService;
     private final DisciplinaryRepository disciplinaryRepository;
 
+    private final MemberMapper memberMapper;
+
     @Override
     public LoginServiceDTO login(LoginRequestDTO requestDTO) {
-        Optional<Member> result = memberRepository.findByEmail(requestDTO.getEmail());
+        Member result=memberMapper.getLogin(requestDTO.getEmail());
 
-        if (result.isEmpty()) {
+        if (result==null){
             throw new BadCredentialsException("유저 정보가 없습니다");
         }
+        Disciplinary disciplinary=disciplinaryRepository.reportList(result.getMno());
 
-        Member member = result.get();
 
-        Disciplinary disciplinary=disciplinaryRepository.reportList(member.getMno());
-
-        if (!passwordEncoder.matches(requestDTO.getPassword(), member.getPassword())) {
+        if(!passwordEncoder.matches(requestDTO.getPassword(),result.getPassword())){
             throw new BadCredentialsException("Password가 일치하지 않습니다");
         }
 
-        if (!member.getIsValidate()) {
+        if(!result.getIsValidate()){
             throw new DisabledException("이메일 인증이 필요합니다.");
         }
 
-        if (!member.isApprove()) {
+        if (!result.isApprove()) {
             throw new DisabledException("관리자의 승인이 필요합니다.");
         }
-
-
-        if( member.getDisciplinary()>=5 || (disciplinary!=null && disciplinary.getExpDate().isAfter(LocalDateTime.now()))){
+        if( result.getDisciplinary()>=5 || (disciplinary!=null && disciplinary.getExpDate().isAfter(LocalDateTime.now()))){
             String expDate= disciplinary.getExpDate()==null? "무기한 ": disciplinary.getExpDate().toString();
             throw new DisabledException("정지된 회원입니다. 정지기간 : "+expDate);
         }
-
         LoginServiceDTO loginServiceDTO = LoginServiceDTO.builder()
-                .mno(member.getMno())
+                .mno(result.getMno())
                 .message("")
                 .build();
-
-        if (member.isReset()) {
+        if (result.isReset()) {
             loginServiceDTO.setMessage("password 변경이 필요 합니다");
         }
 

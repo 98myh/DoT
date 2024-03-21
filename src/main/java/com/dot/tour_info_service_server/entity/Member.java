@@ -54,7 +54,7 @@ public class Member extends BaseEntity {
 
 
   @ColumnDefault("false")
-  private Boolean isValidate;
+  private Boolean isValidate; //인증여부
 
   public void changeIsValidate(Boolean isValidate){this.isValidate=isValidate;};
 
