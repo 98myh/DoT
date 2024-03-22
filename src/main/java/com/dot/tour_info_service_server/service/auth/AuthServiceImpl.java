@@ -38,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final MemberMapper memberMapper;
 
+    //로그인
     @Override
     public LoginServiceDTO login(LoginRequestDTO requestDTO) {
         Member result=memberMapper.getLogin(requestDTO.getEmail());
@@ -74,28 +75,31 @@ public class AuthServiceImpl implements AuthService {
         return loginServiceDTO;
     }
 
+    //회원가입
     @Override
     public Long signup(SignupRequestDTO signupDTO) throws Exception{
 
         // email 중복처리
-        if (memberRepository.existsByEmail(signupDTO.getEmail())) {
+        if(memberMapper.existEmail(signupDTO.getEmail())==1){
             throw new RuntimeException("중복된 이메일");
         }
 
-        Member member = signupDtoToEntity(signupDTO);
+        Member member=signupDtoToEntity(signupDTO);
         // password encoding
         member.changePassword(passwordEncoder.encode(member.getPassword()));
         member.changeIsValidate(false);
+        Long mno;
         try {
-            member = memberRepository.save(member);
-            TokenDTO token = tokenService.generateTokens(member.getMno());
+            mno=memberMapper.signUp(member);
+
+            TokenDTO token = tokenService.generateTokens(mno);
             mailService.sendValidateUrl(signupDTO.getEmail(), signupDTO.getName(), token.getToken());
         } catch (Exception e) {
             log.error(e.getMessage());
             throw e;
         }
 
-        return member.getMno();
+        return mno;
     }
 
     @Override

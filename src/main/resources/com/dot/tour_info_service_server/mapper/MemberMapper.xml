@@ -47,6 +47,43 @@
             email=#{email};
     </select>
 
+<!--    이메일 중복 확인-->
+    <select id="existEmail" resultType="java.lang.Integer">
+        select count(email)
+        from member
+        where email=#{email};
+    </select>
+
+<!--    회원가입-->
+    <insert id="signUp" useGeneratedKeys="true" keyProperty="mno">
+        insert into member (
+            email,
+            password,
+            birth,
+            phone,
+            name,
+            business_id,
+            is_approve
+        )
+        values(
+        #{email},
+        #{password},
+        #{birth},
+        #{phone},
+        #{name},
+        #{businessId},
+        false
+        );
+    </insert>
+    <insert id="roleSet">
+        insert into member_role_set(member_mno,role_set)
+        values(
+        #{mno},
+        #{role}
+        );
+    </insert>
+
+
 <!--mno로 유저 정보 조회-->
     <select id="getUserProfiles" parameterType="java.lang.Long" resultMap="MemberResultMap">
         select
