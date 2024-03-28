@@ -75,6 +75,7 @@
         false
         );
     </insert>
+<!--    역할 등록-->
     <insert id="roleSet">
         insert into member_role_set(member_mno,role_set)
         values(
@@ -83,14 +84,144 @@
         );
     </insert>
 
+<!--    이메일로 유저 검색(Oauth2 로그인 O or X-->
+    <select id="findMemberFromEmail" >
+        select
+            m.mno,
+            m.disciplinary,
+            m.from_social,
+            m.is_approve,
+            m.is_reset,
+            m.is_validate,
+            m.business_id,
+            m.email,
+            m.image,
+            m.name,
+            m.phone
+        from
+            member m
+        where
+            email=#{email} and from_social=#{social};
+    </select>
+
+<!--    유저 이름, 전화번호로 유저 검색-->
+    <select id="searchUserFromNameAndPhone" >
+        select
+            m.mno,
+            m.disciplinary,
+            m.from_social,
+            m.is_approve,
+            m.is_reset,
+            m.is_validate,
+            m.business_id,
+            m.email,
+            m.image,
+            m.name,
+            m.phone
+        from
+            member m
+        where
+            name=#{name} and phone=#{phone};
+    </select>
+
+<!--    회원 검색(name,mno)-->
+<!--    <select id="searchMember" resultMap="MemberResultMap">-->
+<!--        select -->
+<!--            *-->
+<!--        from -->
+<!--            member-->
+<!--        where -->
+<!--            -->
+<!--    </select>    -->
+
+
+<!--    FollowMapper에 있어야할 것 같음-->
+<!--&lt;!&ndash;    팔로워 수 조회&ndash;&gt;-->
+<!--    <select id="searchFollowers">-->
+<!--        select count(-->
+<!--    </select>-->
+
+
+<!--&lt;!&ndash;    팔로잉 수 조회&ndash;&gt;-->
+<!---->
 
 <!--mno로 유저 정보 조회-->
-    <select id="getUserProfiles" parameterType="java.lang.Long" resultMap="MemberResultMap">
+    <select id="getUserProfiles" parameterType="java.lang.Long" >
         select
-            *
+            m.mno,
+            m.disciplinary,
+            m.from_social,
+            m.is_approve,
+            m.is_reset,
+            m.is_validate,
+            m.business_id,
+            m.email,
+            m.image,
+            m.name,
+            m.phone
+
         from
-            member
+            member m
         where
             mno=#{mno};
+    </select>
+
+<!--    회원가입 대기 조회-->
+    <select id="signupWaits">
+        select
+            m.mno,
+            m.disciplinary,
+            m.from_social,
+            m.is_approve,
+            m.is_reset,
+            m.is_validate,
+            m.business_id,
+            m.email,
+            m.image,
+            m.name,
+            m.phone
+        from
+            member m
+        where
+            is_approve=false;
+    </select>
+
+<!--    회원가입 승인-->
+    <update id="agreeSign">
+        update
+            member
+        set
+            is_approve=true
+        where
+            mno=#{mno}
+    </update>
+
+<!--    CartMapper로 가야함-->
+<!--    찜목록 수 조회-->
+
+
+<!--    회원 조회(관리자)-->
+    <select id="memberSearchForAdmin" >
+        select
+            m.mno,
+            m.disciplinary,
+            m.from_social,
+            m.is_approve,
+            m.is_reset,
+            m.is_validate,
+            m.business_id,
+            m.email,
+            m.image,
+            m.name,
+            m.phone,
+            mr.role_set
+        from
+            member m left outer join member_role_set mr on (m.mno=mr.member_mno)
+        <where>
+            m.name like concat('%',#{name},'%')
+            <if test="filter != ''">
+                and mr.role_set=#{filter}
+            </if>
+        </where>
     </select>
 </mapper>

@@ -56,5 +56,45 @@ class MemberMapperTest {
         log.info("롤 테스트 : "+memberMapper.roleSet(mno,"MEMBER"));
     }
 
+    //이메일로 유저 검색(Oauth2 로그인 O or X)
+    @Test
+    public void findEmailTest(){
+        log.info("이메일 유저 검색 테스트 1 : "+memberMapper.findMemberFromEmail("fldh3369@naver.com",false));
+        log.info("이메일 유저 검색 테스트 2 : "+memberMapper.findMemberFromEmail("fldh3369@naver.com",true));
+    }
+
+    //유저 이름, 전화번호로 유저 검색 테스트
+    @Test
+    public void searchUserTest(){
+        log.info("이름, 전화번호로 검색 1: "+memberMapper.searchUserFromNameAndPhone("문영현","01012345678"));
+        log.info("이름, 전화번호로 검색 2: "+memberMapper.searchUserFromNameAndPhone("test","010-1234-5678"));
+    }
+
+    //mno 로 유저 정보 조회 테스트
+    @Test
+    public void getUserProfilesTest(){
+        log.info("mno로 유저 정보 조회 테스트 1 :"+memberMapper.getUserProfiles(1l));
+        log.info("mno로 유저 정보 조회 테스트 2 :"+memberMapper.getUserProfiles(2l));
+    }
+
+    //회원가입 대기 조회
+    @Test
+    public void signupWaiteTest(){
+        log.info("회원가입 대기 조회  : "+memberMapper.signupWaits());
+    }
+
+    //회원가입 승인 테스트
+    @Test
+    public void agreeSignTest(){
+        log.info("회원가입 승인 테스트 : "+memberMapper.agreeSign(1l));
+    }
+
+    //회원 조회 - 관리자
+    @Test
+    public void memberSearchTest(){
+        log.info("회원 조회(관리자) 테스트 1: "+memberMapper.memberSearchForAdmin("","t"));
+        log.info("회원 조회(관리자) 테스트 2: "+memberMapper.memberSearchForAdmin("MEMBER","t"));
+        log.info("회원 조회(관리자) 테스트 3: "+memberMapper.memberSearchForAdmin("ADMIN","t"));
+    }
 
 }

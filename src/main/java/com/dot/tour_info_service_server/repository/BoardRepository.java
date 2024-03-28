@@ -14,9 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
+    //장소에 대한 게시글 정보들 조회
     @Query("select b from Board b where b.bno in (select bp.boardPlacePK.board.bno from BoardPlace bp where bp.place.pno = :pno)")
     List<Board> getBoardsInfo(Long pno);
 
+    //해당 mno의 게시글 mno null로 수정
     @Modifying
     @Transactional
     @Query("update Board b set b.writer.mno = null where b.writer.mno = :mno ")

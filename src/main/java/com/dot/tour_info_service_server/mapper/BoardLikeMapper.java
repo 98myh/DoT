@@ -6,10 +6,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface BoardLikeMapper {
     //게시글에 해당하는 좋아요 삭제
-    void deleteBoardLikeBoard(int bno);
+    int deleteBoardLikeBoard(int bno);
 
     //mno를 받을 때 해당하는 좋아요 삭제
-    void deleteBoardLikeMno(Long mno);
+    int deleteBoardLikeMno(Long mno);
 
     // 게시글 좋아요 여부
     boolean existsBoardLike(BnoAndMnoRequestDTO bnoAndMnoRequestDTO);
