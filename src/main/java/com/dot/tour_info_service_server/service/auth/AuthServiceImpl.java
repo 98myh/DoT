@@ -102,34 +102,45 @@ public class AuthServiceImpl implements AuthService {
         return mno;
     }
 
+
+    //아직 테스트 X
+    //이메일 확인
     @Override
-    public Boolean emailCheck(String email) {
-        return memberRepository.existsByEmail(email);
+    public int emailCheck(String email) {
+        return memberMapper.existEmail(email);
     }
 
+
+    //이메일 찾기
     @Override
     public String findEmail(String name, String phone) throws AccountNotFoundException {
-        Optional<Member> result = memberRepository.findMemberByNameAndPhone(name, phone);
-
+//        Optional<Member> result = memberRepository.findMemberByNameAndPhone(name, phone);
+        Member member=memberMapper.searchUserFromNameAndPhone(name,phone);
         // DB에 없는 경우
-        if (result.isEmpty()) {
+//        if (result.isEmpty()) {
+//            throw new AccountNotFoundException("not found member");
+//        }
+//
+//        Member member = result.get();
+
+        if(member==null){
             throw new AccountNotFoundException("not found member");
         }
-
-        Member member = result.get();
         return member.getEmail();
     }
 
+    //비밀번호 변경
     @Override
     public ResponseDTO changePassword(ChangePasswordRequestDTO passwordRequestDTO) {
-        Optional<Member> result = memberRepository.findByEmailAndFromSocialIsFalse(passwordRequestDTO.getEmail());
+//        Optional<Member> result = memberRepository.findByEmailAndFromSocialIsFalse(passwordRequestDTO.getEmail());
+        Member member=memberMapper.findMemberFromEmail(passwordRequestDTO.getEmail(),false);
         ResponseDTO responseDTO;
 
         // DB 없을 경우
-        if (result.isEmpty()) {
+        if (member==null) {
             throw new BadCredentialsException("유저 정보가 없습니다");
         }
-        Member member = result.get();
+//        Member member = result.get();
 
         // 기존 비밀번호가 일치하지 않을 경우
         if (!passwordEncoder.matches(passwordRequestDTO.getOldPassword(), member.getPassword())) {
@@ -139,6 +150,8 @@ public class AuthServiceImpl implements AuthService {
         String newPassword = passwordEncoder.encode(passwordRequestDTO.getNewPassword());
         member.changePassword(newPassword);
         member.changeIsReset(false);
+
+        //매퍼 만들어야함
         try {
             memberRepository.save(member);
             responseDTO = ResponseDTO.builder()
@@ -157,22 +170,25 @@ public class AuthServiceImpl implements AuthService {
     // 비밀번호 초기화
     @Override
     public ResponseDTO resetPassword(EmailRequestDTO emailRequestDTO) {
-        Optional<Member> result = memberRepository.findByEmailAndFromSocialIsFalse(emailRequestDTO.getEmail());
+//        Optional<Member> result = memberRepository.findByEmailAndFromSocialIsFalse(emailRequestDTO.getEmail());
 
+        Member member=memberMapper.findMemberFromEmail(emailRequestDTO.getEmail(),false);
         // 검색결과x
-        if (result.isEmpty()) {
+        if (member==null) {
             return ResponseDTO.builder()
                     .msg("not found member")
                     .result(false)
                     .build();
         }
-        Member member = result.get();
+//        Member member = result.get();
 
 
         String oldPassword = member.getPassword();
         String password = generateRandomPassword();
         member.changeIsReset(true); // 비밀번호 변경 요청 여부 변경
         member.changePassword(passwordEncoder.encode(password));
+
+        //수정하는것 매퍼 추가해야함
         try {
             memberRepository.save(member);
             mailService.sendPassword(member.getEmail(), member.getName(), password);
@@ -199,6 +215,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    //랜덤 비밀번호 생성기
     private String generateRandomPassword() {
         final int pwLength = 12;
         SecureRandom secureRandom = new SecureRandom();
@@ -212,6 +229,7 @@ public class AuthServiceImpl implements AuthService {
         return password;
     }
 
+    //mapper 추가해야함
     @Override
     public Boolean checkValidate(String email) {
         Optional<Member> result = memberRepository.findByEmail(email);
@@ -230,21 +248,23 @@ public class AuthServiceImpl implements AuthService {
         return true;
     }
 
+    //로그아웃
     @Override
     public void logout() {
         Long mno = SecurityUtil.getCurrentMemberMno();
         tokenService.deleteRefreshToken(mno);
     }
 
+    //
     @Override
     public void resendEmail(String email) throws Exception{
-        Optional<Member> result = memberRepository.findByEmailAndFromSocialIsFalse(email);
-
-        if (result.isEmpty()) {
+//        Optional<Member> result = memberRepository.findByEmailAndFromSocialIsFalse(email);
+        Member member=memberMapper.findMemberFromEmail(email,false);
+        if (member==null) {
             throw new BadCredentialsException("존재하지 않는 이메일");
         }
 
-        Member member = result.get();
+//        Member member = result.get();
         if (member.getIsValidate()) {
             throw new IllegalAccessException("이미 인증된 이메일 입니다.");
         }

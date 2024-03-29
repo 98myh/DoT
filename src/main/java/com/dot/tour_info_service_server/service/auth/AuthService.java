@@ -15,7 +15,7 @@ import java.util.Objects;
 public interface AuthService {
     LoginServiceDTO login(LoginRequestDTO requestDTO) throws Exception;
     Long signup(SignupRequestDTO signupDTO) throws Exception;
-    Boolean emailCheck(String email);
+    int emailCheck(String email);
     String findEmail(String name, String phone) throws Exception;
     ResponseDTO changePassword(ChangePasswordRequestDTO passwordRequestDTO) throws AccountNotFoundException;
     ResponseDTO resetPassword(EmailRequestDTO emailRequestDTO);
