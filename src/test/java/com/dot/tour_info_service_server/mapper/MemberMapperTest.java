@@ -97,4 +97,17 @@ class MemberMapperTest {
         log.info("회원 조회(관리자) 테스트 3: "+memberMapper.memberSearchForAdmin("ADMIN","t"));
     }
 
+    //비밀번호 변경 테스트
+    @Test
+    public void passwordChangeTest(){
+        log.info("비밀번호 변경 테스트 : "+memberMapper.changePassword(1l,"0000",false));
+    }
+
+    //이메일 인증 완료 테스트
+    @Test
+    public void emailValidateTest(){
+        log.info("이메일 인증 테스트 " +memberMapper.emailValidate("fldh3369@naver.com"));
+    }
+
+
 }

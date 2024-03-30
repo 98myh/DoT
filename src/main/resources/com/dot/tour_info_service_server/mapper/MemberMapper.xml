@@ -224,4 +224,29 @@
             </if>
         </where>
     </select>
+
+<!--    비밀번호 변경-->
+    <update id="changePassword">
+        update
+            member
+        set
+            password=#{password}
+        <choose>
+            <when test="isReset=true">
+                and is_reset=true
+            </when>
+        </choose>
+        where
+            mno=#{mno}
+    </update>
+
+<!--    인증 완료-->
+    <update id="emailValidate">
+        update
+            member
+        set
+            is_validate=true
+        where
+            email=#{email}
+    </update>
 </mapper>

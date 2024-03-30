@@ -118,9 +118,9 @@ public class AuthController {
     // permit all
     // 이메일 중복 검사
     @PostMapping("/email/check")
-    public ResponseEntity<Map<String, Boolean>> checkDuplicate(@Valid @RequestBody EmailRequestDTO emailDTO) {
-        Map<String, Boolean> responseMap = new HashMap<>();
-        Boolean isDuplicate;
+    public ResponseEntity<Map<String, Integer>> checkDuplicate(@Valid @RequestBody EmailRequestDTO emailDTO) {
+        Map<String, Integer> responseMap = new HashMap<>();
+        int isDuplicate;
         try {
             isDuplicate = authService.emailCheck(emailDTO.getEmail());
         } catch (Exception e) {

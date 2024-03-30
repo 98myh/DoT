@@ -32,7 +32,7 @@ import java.util.*;
 public class AuthServiceImpl implements AuthService {
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
-    private final MemberRepository memberRepository;
+
     private final TokenService tokenService;
     private final DisciplinaryRepository disciplinaryRepository;
 
@@ -148,12 +148,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String newPassword = passwordEncoder.encode(passwordRequestDTO.getNewPassword());
-        member.changePassword(newPassword);
-        member.changeIsReset(false);
+//        member.changePassword(newPassword);
+//        member.changeIsReset(false);
 
         //매퍼 만들어야함
         try {
-            memberRepository.save(member);
+//            memberRepository.save(member);
+            memberMapper.changePassword(member.getMno(),newPassword,false);
             responseDTO = ResponseDTO.builder()
                     .msg("change success")
                     .result(true)
@@ -190,13 +191,15 @@ public class AuthServiceImpl implements AuthService {
 
         //수정하는것 매퍼 추가해야함
         try {
-            memberRepository.save(member);
+//            memberRepository.save(member);
+            memberMapper.changePassword(member.getMno(),passwordEncoder.encode(password),true);
             mailService.sendPassword(member.getEmail(), member.getName(), password);
         } catch (Exception e) {
             log.error(e.getClass());
             if (e instanceof MailSendException) {
-                member.changePassword(oldPassword);
-                memberRepository.save(member);
+//                member.changePassword(oldPassword);
+//                memberRepository.save(member);
+                memberMapper.changePassword(member.getMno(), oldPassword,false);
                 return ResponseDTO.builder()
                         .msg("email transfer failed")
                         .result(false)
@@ -232,18 +235,20 @@ public class AuthServiceImpl implements AuthService {
     //mapper 추가해야함
     @Override
     public Boolean checkValidate(String email) {
-        Optional<Member> result = memberRepository.findByEmail(email);
+//        Optional<Member> result = memberRepository.findByEmail(email);
+        Member member=memberMapper.findMemberFromEmail(email,false);
 
-        if (result.isEmpty()) {
+        if (member==null) {
             return false;
         }
-        Member member = result.get();
+//        Member member = result.get();
 
         if (member.getIsValidate()){
             return false;
         }
-        member.changeIsValidate(true);
-        memberRepository.save(member);
+//        member.changeIsValidate(true);
+//        memberRepository.save(member);
+        memberMapper.emailValidate(email);
 
         return true;
     }

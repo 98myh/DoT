@@ -57,4 +57,10 @@ public interface MemberMapper {
     //회원 조회 - 관리자
     Member[] memberSearchForAdmin(String filter, String name);
 
+
+    //비밀번호 변경
+    int changePassword(Long mno,String password,boolean isReset);
+
+    //이메일 인증 완료
+    int emailValidate(String email);
 }
