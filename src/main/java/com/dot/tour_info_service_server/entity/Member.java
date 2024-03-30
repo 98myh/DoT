@@ -54,9 +54,9 @@ public class Member extends BaseEntity {
 
 
   @ColumnDefault("false")
-  private Boolean isValidate; //인증여부
+  private boolean isValidate; //인증여부
 
-  public void changeIsValidate(Boolean isValidate){this.isValidate=isValidate;};
+  public void changeIsValidate(boolean isValidate){this.isValidate=isValidate;};
 
   @ElementCollection(fetch = FetchType.LAZY)
   @Enumerated(EnumType.STRING)

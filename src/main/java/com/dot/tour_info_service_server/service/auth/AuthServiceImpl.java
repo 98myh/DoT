@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadCredentialsException("Password가 일치하지 않습니다");
         }
 
-        if(!result.getIsValidate()){
+        if(!result.isValidate()){
             throw new DisabledException("이메일 인증이 필요합니다.");
         }
 
@@ -182,12 +182,13 @@ public class AuthServiceImpl implements AuthService {
                     .build();
         }
 //        Member member = result.get();
-
-
+        //이전 비밀번호
         String oldPassword = member.getPassword();
+        //새로운 초기화 비밀번호
         String password = generateRandomPassword();
-        member.changeIsReset(true); // 비밀번호 변경 요청 여부 변경
-        member.changePassword(passwordEncoder.encode(password));
+
+        //member.changeIsReset(true); // 비밀번호 변경 요청 여부 변경
+        //member.changePassword(passwordEncoder.encode(password));
 
         //수정하는것 매퍼 추가해야함
         try {
@@ -243,7 +244,7 @@ public class AuthServiceImpl implements AuthService {
         }
 //        Member member = result.get();
 
-        if (member.getIsValidate()){
+        if (member.isValidate()){
             return false;
         }
 //        member.changeIsValidate(true);
@@ -270,7 +271,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
 //        Member member = result.get();
-        if (member.getIsValidate()) {
+        if (member.isValidate()) {
             throw new IllegalAccessException("이미 인증된 이메일 입니다.");
         }
 

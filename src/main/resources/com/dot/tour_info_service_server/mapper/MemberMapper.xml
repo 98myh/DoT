@@ -97,11 +97,12 @@
             m.email,
             m.image,
             m.name,
+            m.password,
             m.phone
         from
             member m
         where
-            email=#{email} and from_social=#{social};
+            email=#{email} and from_social=#{social}
     </select>
 
 <!--    유저 이름, 전화번호로 유저 검색-->
@@ -121,7 +122,7 @@
         from
             member m
         where
-            name=#{name} and phone=#{phone};
+            name=#{name} and phone=#{phone}
     </select>
 
 <!--    회원 검색(name,mno)-->
@@ -163,7 +164,7 @@
         from
             member m
         where
-            mno=#{mno};
+            mno=#{mno}
     </select>
 
 <!--    회원가입 대기 조회-->
@@ -183,7 +184,7 @@
         from
             member m
         where
-            is_approve=false;
+            is_approve=false
     </select>
 
 <!--    회원가입 승인-->
@@ -232,9 +233,12 @@
         set
             password=#{password}
         <choose>
-            <when test="isReset=true">
-                and is_reset=true
+            <when test="isReset==true">
+                ,is_reset=true
             </when>
+            <otherwise>
+                ,is_reset=false
+            </otherwise>
         </choose>
         where
             mno=#{mno}
